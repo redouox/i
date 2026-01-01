@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dark SaaS Loader</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #020617;
+      --card: rgba(15, 23, 42, 0.75);
+      --border: rgba(148, 163, 184, 0.15);
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #22c55e;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      background: radial-gradient(circle at top, #0f172a, #020617);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Background grid */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(circle at center, black 40%, transparent 75%);
+      pointer-events: none;
+    }
+
+    /* Fade-in animation */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.5s ease forwards;
+      animation-delay: var(--delay, 0s);
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 120px 20px 1px; /* reduced bottom padding */
+      position: relative;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(34,197,94,0.1);
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(90deg, #22c55e, #4ade80);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      margin-top: 18px;
+      color: var(--muted);
+      max-width: 640px;
+      margin-inline: auto;
+      font-size: 18px;
+    }
+
+    /* Counters / Stats */
+    .stats {
+      max-width: 900px;
+      margin: 40px auto 40px;
+      padding: 0 10px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+      text-align: center;
+    }
+
+    .stat {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 10px;
+      backdrop-filter: blur(12px);
+      transition: 0.3s;
+    }
+
+    .stat:hover {
+      transform: translateY(-6px);
+      border-color: rgba(34,197,94,0.4);
+      box-shadow: 0 20px 40px rgba(0,0,0,.4);
+    }
+
+    .stat-number {
+      font-size: 42px;
+      font-weight: 800;
+      background: linear-gradient(90deg, #22c55e, #4ade80);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label {
+      margin-top: 8px;
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* Code section */
+    .code-wrapper {
+      position: relative;
+      max-width: 800px;
+      margin: 80px auto;
+      padding: 0 20px;
+    }
+
+    .orb {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 0;
+    }
+
+    .orb::before {
+      content: "";
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .code-card {
+      position: relative;
+      z-index: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .file {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .copy-btn {
+      background: rgba(34,197,94,0.15);
+      color: var(--accent);
+      border: 1px solid rgba(0,0,0,0.3);
+      padding: 6px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: rgba(34,197,94,0.25);
+      transform: translateY(-1px);
+    }
+
+    pre {
+      background: #020617;
+      border-radius: 12px;
+      padding: 18px;
+      overflow-x: auto;
+      font-size: 15px;
+      display: flex;
+      justify-content: center;
+    }
+
+    code {
+      color: #e5e7eb;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    /* Features */
+    .features {
+      max-width: 1100px;
+      margin: 60px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+    }
+
+    .feature {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      transition: 0.3s;
+    }
+
+    .feature:hover {
+      transform: translateY(-6px);
+      border-color: rgba(34,197,94,0.4);
+      box-shadow: 0 20px 40px rgba(0,0,0,.4);
+    }
+
+    .feature h3 {
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+
+    .feature p {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HERO -->
+  <section class="hero fade-in" style="--delay: 0s">
+    <div class="badge">🟢 Online • Keyless</div>
+    <h1>A Script That Does <span>More</span> With Less</h1>
+    <p>The modern, lightweight loader designed for speed, control, and simplicity.</p>
+  </section>
+
+  <!-- CODE -->
+  <section class="code-wrapper fade-in" style="--delay: 0.2s">
+    <div class="orb"></div>
+
+    <div class="code-card">
+      <div class="code-header">
+        <span class="file">loader.lua</span>
+        <button class="copy-btn" onclick="copyCode()">Copy</button>
+      </div>
+
+      <pre><code id="code">
+loadstring(game:HttpGet("https://example.com/loader.lua"))()
+      </code></pre>
+    </div>
+  </section>
+
+  <!-- COUNTERS -->
+  <section class="stats fade-in" style="--delay: 0.4s">
+    <div class="stat">
+      <div class="stat-number" data-target="900000">0</div>
+      <div class="stat-label">Executions<br>Worldwide</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-number" data-target="850">0</div>
+      <div class="stat-label">Online Users<br>Using</div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features fade-in" style="--delay: 0.6s">
+    <div class="feature">
+      <h3>⚡ Fast Execution</h3>
+      <p>Minimal loader with instant execution and no unnecessary overhead.</p>
+    </div>
+
+    <div class="feature">
+      <h3>🧠 Smart Design</h3>
+      <p>Clean UI, automatic updates, and modular architecture.</p>
+    </div>
+
+    <div class="feature">
+      <h3>🔒 Secure</h3>
+      <p>Protected endpoints and integrity checks built in.</p>
+    </div>
+
+    <div class="feature">
+      <h3>🎮 Multi-Game</h3>
+      <p>Designed to scale across multiple supported experiences.</p>
+    </div>
+  </section>
+
+  <footer>
+    © 2026 • Dark SaaS Loader UI
+  </footer>
+
+  <script>
+const _0x3c4df0=_0x33d8;(function(_0x59bf4b,_0x40c338){const _0x26fb25=_0x33d8,_0x5e0cbc=_0x59bf4b();while(!![]){try{const _0x3a70e7=-parseInt(_0x26fb25(0x1f1))/0x1+-parseInt(_0x26fb25(0x204))/0x2+-parseInt(_0x26fb25(0x1f7))/0x3+-parseInt(_0x26fb25(0x1ed))/0x4+parseInt(_0x26fb25(0x1fc))/0x5*(parseInt(_0x26fb25(0x1f8))/0x6)+-parseInt(_0x26fb25(0x1fa))/0x7+-parseInt(_0x26fb25(0x1f0))/0x8*(-parseInt(_0x26fb25(0x1ee))/0x9);if(_0x3a70e7===_0x40c338)break;else _0x5e0cbc['push'](_0x5e0cbc['shift']());}catch(_0x2bd928){_0x5e0cbc['push'](_0x5e0cbc['shift']());}}}(_0x8c84,0x3fa4b));function copyCode(){const _0x1d7f2a=_0x33d8,_0x38fa03=document[_0x1d7f2a(0x1f5)](_0x1d7f2a(0x1ec))[_0x1d7f2a(0x201)];navigator[_0x1d7f2a(0x1f3)]['writeText'](_0x38fa03);const _0x4b7886=document[_0x1d7f2a(0x1f2)](_0x1d7f2a(0x202));_0x4b7886['textContent']=_0x1d7f2a(0x1f9),setTimeout(()=>_0x4b7886['textContent']=_0x1d7f2a(0x203),0x5dc);}function animateCounters(){const _0x10f554=_0x33d8,_0x491ee7=document[_0x10f554(0x1f4)]('.stat-number');_0x491ee7[_0x10f554(0x1ef)](_0x4ec400=>{const _0x1b94eb=_0x10f554,_0x53493c=+_0x4ec400[_0x1b94eb(0x1fb)](_0x1b94eb(0x1ff)),_0x3f0fbe=0xc8,_0xe4609=()=>{const _0x4c61f5=_0x1b94eb,_0x560b9f=+_0x4ec400[_0x4c61f5(0x201)][_0x4c61f5(0x1fd)](/\D/g,''),_0x445d10=Math[_0x4c61f5(0x1f6)](_0x53493c/_0x3f0fbe);_0x560b9f<_0x53493c?(_0x4ec400[_0x4c61f5(0x201)]=(_0x560b9f+_0x445d10)['toLocaleString']()+'+',requestAnimationFrame(_0xe4609)):_0x4ec400['innerText']=_0x53493c[_0x4c61f5(0x1fe)]()+'+';};_0xe4609();});}function _0x33d8(_0x2b4b2c,_0x8d8bf1){_0x2b4b2c=_0x2b4b2c-0x1ec;const _0x8c841c=_0x8c84();let _0x33d8d8=_0x8c841c[_0x2b4b2c];return _0x33d8d8;}window[_0x3c4df0(0x200)]('load',animateCounters);function _0x8c84(){const _0x39effb=['151856NcCoyw','code','1769332fBFPno','11429289NxGEtN','forEach','8waBmQS','373549jjPEqD','querySelector','clipboard','querySelectorAll','getElementById','ceil','129630TDtszr','6CUbUbF','Copied!','669515MQicYM','getAttribute','107135tmebHf','replace','toLocaleString','data-target','addEventListener','innerText','.copy-btn','Copy'];_0x8c84=function(){return _0x39effb;};return _0x8c84();}
+  </script>
+
+</body>
+</html>
